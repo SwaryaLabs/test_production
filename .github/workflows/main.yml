@@ -1,4 +1,4 @@
-name: Deploy to cPanel
+name: Deploy to cPanel (SFTP Only)
 
 on:
   push:
@@ -8,21 +8,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1️⃣ Get your code
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Upload files to cPanel via SFTP
       - name: 📤 Deploy via SFTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          protocol: ftp # Change to 'ftp' if SFTP is not enabled
-          local-dir: ./ # Deploy everything from repo root
-          server-dir: ${{ secrets.FTP_SERVER_PATH }}/
+          port: ${{ secrets.FTP_PORT || 22 }}
+          protocol: sftp  # Change to 'ftp' if SFTP fails
+          local-dir: ./
+          server-dir: ${{ secrets.SERVER_PATH }}/
           exclude: |
             **/.git*
             **/.git*/**
@@ -31,20 +29,7 @@ jobs:
             **/README.md
             .github/**
             .gitignore
+            **/*.md
 
-      # 3️⃣ SSH into server to install deps & restart app
-      - name: 🔄 Install deps & restart Node.js app
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT }}
-          script: |
-            cd ${{ secrets.SERVER_PATH }}
-            echo "📦 Installing production dependencies..."
-            npm install --production --ignore-scripts
-            echo "🔁 Restarting Node.js app (cPanel Passenger)..."
-            mkdir -p tmp
-            touch tmp/restart.txt
-            echo "✅ Deployment complete!"
+      - name: ✅ Deployment complete
+        run: echo "🚀 Files uploaded! Visit your domain to test."
