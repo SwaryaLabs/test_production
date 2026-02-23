@@ -17,5 +17,5 @@ app.get(`/{*splat}`, (req, res) => {
     res.sendFile(`${staticPath}/index.html`);
 });
 app.listen(PORT, () => {
-    console.log(`Server has started.`);
+    console.log(`Server has started listening.`);
 });
