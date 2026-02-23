@@ -1,4 +1,4 @@
-name: Deploy to cPanel (SFTP Only)
+name: Deploy to cPanel (FTPS)
 
 on:
   push:
@@ -11,14 +11,14 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📤 Deploy via SFTP
+      - name: 📤 Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT || 22 }}
-          protocol: sftp  # Change to 'ftp' if SFTP fails
+          port: ${{ secrets.FTP_PORT || 21 }}  # ✅ FTP/FTPS default is 21
+          protocol: ftps  # ✅ Changed from 'sftp' to 'ftps'
           local-dir: ./
           server-dir: ${{ secrets.SERVER_PATH }}/
           exclude: |
@@ -32,4 +32,4 @@ jobs:
             **/*.md
 
       - name: ✅ Deployment complete
-        run: echo "🚀 Files uploaded! Visit your domain to test."
+        run: echo "🚀 Files uploaded via FTPS! Restart your app in cPanel if needed."
