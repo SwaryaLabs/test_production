@@ -20,7 +20,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          protocol: sftp # Change to 'ftp' if SFTP is not enabled
+          protocol: ftp # Change to 'ftp' if SFTP is not enabled
           local-dir: ./ # Deploy everything from repo root
           server-dir: ${{ secrets.FTP_SERVER_PATH }}/
           exclude: |
